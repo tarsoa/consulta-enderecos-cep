@@ -1,10 +1,10 @@
 import React from 'react';
 import { Chart } from 'primereact/chart';
 
-const GraficoPizza = ({ graficoData }) => {
+const GraficoPizza = ({ chartData }) => {
     return (
         <div className="flex justify-content-center">
-            <Chart type="pie" data={graficoData} />
+            <Chart type="pie" data={chartData} />
         </div>
     );
 }

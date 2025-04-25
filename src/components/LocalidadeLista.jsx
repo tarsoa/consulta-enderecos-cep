@@ -8,9 +8,9 @@ const LocalidadeLista = ({ localidades }) => {
 
   return (
     <div className="grid">
-      {localidades.map((localidade) => (
-        <div className="col-12" key={localidade.cep}>
-          <Localidade localidade={localidade} />
+      {localidades.map((item) => (
+        <div className="col-12" key={item.cep}>
+          <Localidade localidade={item} />
         </div>
       ))}
     </div>

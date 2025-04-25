@@ -57,7 +57,7 @@ class App extends Component {
     });
 
     this.setState({
-      graficoData: {
+      chartData: {
         labels: Object.keys(contagem),
         datasets: [{
           data: Object.values(contagem)
@@ -73,8 +73,8 @@ class App extends Component {
           <Busca dica="Digite um CEP..." onBuscaRealizada={this.onBuscaRealizada} />
           <LocalidadeLista localidades={this.state.localidades} />
         </div>
-        <div className="col-12 md:col-6 flex justify-content-center align-items-center">
-          <GraficoPizza graficoData={this.state.graficoData} />
+        <div className="col-12 md:col-6">
+          <GraficoPizza chartData={this.state.chartData} />
         </div>
       </div>
     )
