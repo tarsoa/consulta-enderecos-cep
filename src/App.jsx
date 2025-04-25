@@ -1,12 +1,14 @@
 import { Component } from "react";
 import Busca from "./components/Busca";
 import LocalidadeLista from "./components/LocalidadeLista";
+import GraficoPizza from "./components/GraficoPizza";
 import viacepClient from "./utils/viacepClient";
 
 class App extends Component {
   state = {
-    localidades: []
-  };
+    localidades: [],
+    graficoData: {}
+  }
 
   onBuscaRealizada = (cep) => {
     if (!cep) {
@@ -34,14 +36,35 @@ class App extends Component {
           uf: result.data.uf
         };
 
-        this.setState((estadoAnterior) => ({
-          localidades: [novaLocalidade, ...estadoAnterior.localidades]
-        }));
+        this.setState(
+          (estadoAnterior) => ({
+            localidades: [novaLocalidade, ...estadoAnterior.localidades]
+          }),
+          this.atualizarGrafico
+        );
       })
       .catch(() => {
         alert("Erro ao buscar CEP");
       });
-  };
+  }
+
+  atualizarGrafico = () => {
+    const { localidades } = this.state;
+    const contagem = {};
+
+    localidades.forEach(loc => {
+      contagem[loc.uf] = (contagem[loc.uf] || 0) + 1;
+    });
+
+    this.setState({
+      graficoData: {
+        labels: Object.keys(contagem),
+        datasets: [{
+          data: Object.values(contagem)
+        }]
+      }
+    });
+  }
 
   render() {
     return (
@@ -50,8 +73,11 @@ class App extends Component {
           <Busca dica="Digite um CEP..." onBuscaRealizada={this.onBuscaRealizada} />
           <LocalidadeLista localidades={this.state.localidades} />
         </div>
+        <div className="col-12 md:col-6 flex justify-content-center align-items-center">
+          <GraficoPizza graficoData={this.state.graficoData} />
+        </div>
       </div>
-    );
+    )
   }
 }
 
