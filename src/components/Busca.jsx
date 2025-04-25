@@ -1,27 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import viacepClient from "../utils/viacepClient";
+import LocalidadeLista from "./LocalidadeLista";
 
 function Busca() {
   const [cep, setCep] = useState("");
-
-  const cepsFixos = ["04094050", "55592970"];
-
-    useEffect(() => {
-    const buscarCepsFixos = async () => {
-      try {
-        const respostas = await Promise.all(
-          cepsFixos.map((cep) => viacepClient.get(`${cep}/json`))
-        );
-        respostas.forEach((res) =>
-          console.log("CEP fixo retornado pela API:", res.data)
-        );
-      } catch (error) {
-        console.error("Erro ao buscar os CEPs fixos:", error);
-      }
-    };
-
-    buscarCepsFixos();
-  }, []);
+  const [enderecos, setEnderecos] = useState([]);
 
   const buscarCepDigitado = async () => {
     if (!cep) {
@@ -36,8 +19,8 @@ function Busca() {
       if (dados.erro) {
         alert("CEP inválido ou não encontrado.");
       } else {
-        console.log("CEP digitado retornado pela API:", dados);
-        setCep(""); 
+        setEnderecos((prevEnderecos) => [dados, ...prevEnderecos]); // adiciona no topo
+        setCep("");
       }
     } catch (error) {
       alert("Erro ao buscar o CEP.");
@@ -60,6 +43,8 @@ function Busca() {
         }}
       />
       <button onClick={buscarCepDigitado}>Buscar</button>
+
+      <LocalidadeLista enderecos={enderecos} />
     </div>
   );
 }
