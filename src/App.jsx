@@ -1,9 +1,10 @@
 import React from "react";
+import Busca from "./components/Busca";
 
 function App() {
   return (
-    <div className="p-6">
-      <h1 className="text-6xl font-bold mb-4">Hello, P1</h1>
+    <div style={{ padding: "40px", fontFamily: "Arial" }}>
+      <Busca />
     </div>
   );
 }
