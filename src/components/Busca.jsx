@@ -1,10 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import viacepClient from "../utils/viacepClient";
-import LocalidadeLista from "./LocalidadeLista";
 
 function Busca() {
-  const [enderecos, setEnderecos] = useState([]);
   const [cep, setCep] = useState("");
+
+  const cepsFixos = ["04094050", "55592970"];
+
+    useEffect(() => {
+    const buscarCepsFixos = async () => {
+      try {
+        const respostas = await Promise.all(
+          cepsFixos.map((cep) => viacepClient.get(`${cep}/json`))
+        );
+        respostas.forEach((res) =>
+          console.log("CEP fixo retornado pela API:", res.data)
+        );
+      } catch (error) {
+        console.error("Erro ao buscar os CEPs fixos:", error);
+      }
+    };
+
+    buscarCepsFixos();
+  }, []);
 
   const buscarCepDigitado = async () => {
     if (!cep) {
@@ -19,9 +36,8 @@ function Busca() {
       if (dados.erro) {
         alert("CEP inválido ou não encontrado.");
       } else {
-        console.log("Dados retornados pela API:", dados);
-        setEnderecos((prev) => [...prev, dados]);
-        setCep(""); // limpa o campo
+        console.log("CEP digitado retornado pela API:", dados);
+        setCep(""); 
       }
     } catch (error) {
       alert("Erro ao buscar o CEP.");
@@ -31,23 +47,19 @@ function Busca() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="Digite o CEP"
-          value={cep}
-          onChange={(e) => setCep(e.target.value)}
-          style={{
-            padding: "8px",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            marginRight: "10px",
-          }}
-        />
-        <button onClick={buscarCepDigitado}>Buscar</button>
-      </div>
-
-      <LocalidadeLista enderecos={enderecos} />
+      <input
+        type="text"
+        placeholder="Digite o CEP"
+        value={cep}
+        onChange={(e) => setCep(e.target.value)}
+        style={{
+          padding: "8px",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          marginRight: "10px",
+        }}
+      />
+      <button onClick={buscarCepDigitado}>Buscar</button>
     </div>
   );
 }
