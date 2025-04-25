@@ -1,68 +1,46 @@
-import React, { useEffect, useState } from "react";
-import viacepClient from "../utils/viacepClient";
+// rcc
+import React, { Component } from 'react';
 
-function Busca() {
-  const [cep, setCep] = useState("");
+import { Button } from 'primereact/button';
+import { IconField } from 'primereact/iconField';
+import { InputIcon } from 'primereact/inputicon';
+import { InputText } from 'primereact/inputtext';
 
-  const cepsFixos = ["04094050", "55592970"];
-
-  // Busca os CEPs chumbados no carregamento
-  useEffect(() => {
-    const buscarCepsFixos = async () => {
-      try {
-        const respostas = await Promise.all(
-          cepsFixos.map((cep) => viacepClient.get(`${cep}/json`))
-        );
-        respostas.forEach((res) =>
-          console.log("CEP fixo retornado pela API:", res.data)
-        );
-      } catch (error) {
-        console.error("Erro ao buscar os CEPs fixos:", error);
-      }
-    };
-
-    buscarCepsFixos();
-  }, []);
-
-  const buscarCepDigitado = async () => {
-    if (!cep) {
-      alert("Por favor, digite um CEP.");
-      return;
-    }
-
-    try {
-      const response = await viacepClient.get(`${cep}/json`);
-      const dados = response.data;
-
-      if (dados.erro) {
-        alert("CEP inválido ou não encontrado.");
-      } else {
-        console.log("CEP digitado retornado pela API:", dados);
-        setCep(""); // limpa o campo após a busca
-      }
-    } catch (error) {
-      alert("Erro ao buscar o CEP.");
-      console.error("Erro na requisição:", error);
-    }
+export default class Busca extends Component {
+  state = {
+    cep: ''
   };
 
-  return (
-    <div style={{ padding: "20px" }}>
-      <input
-        type="text"
-        placeholder="Digite o CEP"
-        value={cep}
-        onChange={(e) => setCep(e.target.value)}
-        style={{
-          padding: "8px",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          marginRight: "10px",
-        }}
-      />
-      <button onClick={buscarCepDigitado}>Buscar</button>
-    </div>
-  );
+  onCepAlterado = (event) => {
+    console.log(event.target.value);
+    this.setState({ cep: event.target.value });
+  };
+
+  onFormSubmit = (event) => {
+    event.preventDefault();
+    this.props.onBuscaRealizada(this.state.cep);
+  };
+
+  render() {
+    return (
+      <form onSubmit={this.onFormSubmit}>
+        <div className="flex flex-column">
+          <IconField iconPosition="left">
+            <InputIcon className="pi pi-search" />
+            <InputText
+              className="w-full"
+              placeholder={this.props.dica}
+              onChange={this.onCepAlterado}
+              value={this.state.cep}
+            />
+          </IconField>
+          <Button label="OK" outlined />
+        </div>
+      </form>
+    );
+  }
 }
 
-export default Busca;
+Busca.defaultProps = {
+  dica: 'Digite o CEP...'
+};
