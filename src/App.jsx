@@ -1,22 +1,11 @@
-import React from 'react';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
+import React from "react";
 
-const App = () => {
-  const style = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-    backgroundColor: '#f0f0f0',
-  };
-
+function App() {
   return (
-    <div style={style}>
-      <h1>Hello, P1</h1>
+    <div className="p-6">
+      <h1 className="text-6xl font-bold mb-4">Hello, P1</h1>
     </div>
-  )
+  );
 }
 
 export default App;
